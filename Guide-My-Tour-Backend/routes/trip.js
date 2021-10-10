@@ -11,6 +11,8 @@ router.get('/trip', tripController.getAllTrip);
 //5.
 router.delete('/trip', tripController.deleteAllTrip);
 //6.
-router.get('/trip/:name', tripController.getOneTrip);
+router.get('/trip/:placeName', tripController.getOneTrip);
+//7.
+router.delete('/trip/:placeName', tripController.deleteOneTrip);
 
 module.exports = router; // export to use in app.js
