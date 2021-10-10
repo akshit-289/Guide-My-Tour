@@ -39,15 +39,15 @@ const getOneTrip = (req, res) => {
     });
 };
   
-//POST trip
+//POST tea
 const newTrip = (req, res) => {
-    //check if the trip name already exists in db
-    Trip.findOne({name:req.body.placeName},(data)=>{
+    //check if the tea name already exists in db
+    Trip.findOne({placeName:req.body.placeName},(data)=>{
 
-        //if trip not in db, add it
+        //if tea not in db, add it
         if(data===null){
-            //create a new trip object using the Trip model and req.body
-            const newTrip = new Trip({
+            //create a new tea object using the Tea model and req.body
+            let newTrip = new Trip({
                 id: req.body.id,
                 placeName:req.body.placeName,
                 imgUrl: req.file.path, 
@@ -61,12 +61,39 @@ const newTrip = (req, res) => {
                 if(err) return res.json({Error: err});
                 return res.json(data);
             })
-        //if trip is in db, return a message to inform it exists            
+        //if tea is in db, return a message to inform it exists            
         }else{
-            return res.json({message:"Trip already exists"});
+            let newTrip = new Trip({
+                id: req.body.id,
+                placeName:req.body.placeName,
+                imgUrl: req.file.path, 
+                influencerName: req.body.influencerName,
+                location: req.body.location,
+                description: req.body.description,
+            })
+
+            // save this object to database
+            newTrip.save((err, data)=>{
+                if(err) return res.json({Error: err});
+                return res.json(data);
+            })
         }
     })    
 };
+
+//DELETE 1 trip
+const deleteOneTrip = (req, res) => {
+    let placeName = req.params.placeName; // get the name of trip to delete
+
+    Trip.deleteOne({placeName:placeName}, (err, data) => {
+    if(err || !data) {
+        return res.json({message: "Trip doesn't exist."});
+    }
+    else return res.json({message: "Trip deleted."}); //deleted if found
+    });
+};
+
+
 
 
 const storage = multer.diskStorage({
@@ -86,6 +113,7 @@ module.exports = {
     uploadImg,
     getAllTrip,
     deleteAllTrip,
+    deleteOneTrip,
     getOneTrip,
   };
 
